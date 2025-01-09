@@ -1,28 +1,60 @@
 pipeline {
     agent any
-    tools { nodejs 'my-nodejs' } // Ensure 'my-nodejs' is configured in Jenkins
+    tools { 
+        nodejs 'my-nodejs' // Ensure this is configured in Jenkins 
+    }
     stages {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'npm install'
+                    try {
+                        echo 'Installing dependencies...'
+                        cleanWs() // Clean workspace before starting
+                        sh 'npm install --verbose'
+                    } catch (Exception e) {
+                        echo "Error during dependency installation: ${e}"
+                        error "Stage 'Install Dependencies' failed."
+                    }
                 }
             }
         }
         stage('Build') {
             steps {
                 script {
-                    sh 'npm run build'
+                    try {
+                        echo 'Building the Next.js application...'
+                        sh 'npm run build'
+                    } catch (Exception e) {
+                        echo "Error during build: ${e}"
+                        error "Stage 'Build' failed."
+                    }
                 }
             }
         }
         stage('Start') {
             steps {
                 script {
-                    sh 'npm run start'
+                    try {
+                        echo 'Starting the Next.js application...'
+                        sh 'npm run start'
+                        echo 'Next.js application started successfully.'
+                    } catch (Exception e) {
+                        echo "Error during application start: ${e}"
+                        error "Stage 'Start' failed."
+                    }
                 }
-                echo 'Next.js application started successfully.'
             }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs for details.'
         }
     }
 }
