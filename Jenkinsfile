@@ -1,7 +1,8 @@
 pipeline {
     agent any
-    tools { 
-        nodejs 'my-nodejs' // Ensure this is configured in Jenkins 
+   tools {
+        git 'default-git' // Replace 'default-git' with the name you configured
+        nodejs 'my-nodejs'
     }
     stages {
         stage('Install Dependencies') {
