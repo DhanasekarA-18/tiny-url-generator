@@ -1,8 +1,8 @@
 pipeline {
     agent any
-   tools {
+    tools {
         git 'default-git' // Replace 'default-git' with the name you configured
-        nodejs 'my-nodejs'
+        nodejs 'my-nodejs' // Ensure this matches your Node.js tool configuration in Jenkins
     }
     stages {
         stage('Install Dependencies') {
@@ -11,7 +11,7 @@ pipeline {
                     try {
                         echo 'Installing dependencies...'
                         cleanWs() // Clean workspace before starting
-                        sh 'npm install --verbose'
+                        bat 'npm install --verbose'
                     } catch (Exception e) {
                         echo "Error during dependency installation: ${e}"
                         error "Stage 'Install Dependencies' failed."
@@ -24,7 +24,7 @@ pipeline {
                 script {
                     try {
                         echo 'Building the Next.js application...'
-                        sh 'npm run build'
+                        bat 'npm run build'
                     } catch (Exception e) {
                         echo "Error during build: ${e}"
                         error "Stage 'Build' failed."
@@ -37,7 +37,7 @@ pipeline {
                 script {
                     try {
                         echo 'Starting the Next.js application...'
-                        sh 'npm run start'
+                        bat 'npm run start'
                         echo 'Next.js application started successfully.'
                     } catch (Exception e) {
                         echo "Error during application start: ${e}"
